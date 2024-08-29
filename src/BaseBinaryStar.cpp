@@ -2142,13 +2142,6 @@ void BaseBinaryStar::CalculateMassTransfer(const double p_Dt) {
             }
         }
 
-        // If the current timestep is smaller than the donor's thermal timescale, only a fraction of the mass
-        // that needs to be donated has time to be donated
-        // double donorThermalTimescale = m_Donor->CalculateThermalTimescale();
-        // if (p_Dt < donorThermalTimescale) {
-        //     massDiffDonor = (p_Dt / donorThermalTimescale) * massDiffDonor;
-        // }
-
         if (!m_CEDetails.CEEnow) {                                                                                              // CE flagged?
                                                                                                                                 // no
             double massGainAccretor = -massDiffDonor * m_FractionAccreted;                                                      // set accretor mass gain to mass loss * conservativeness
@@ -2173,8 +2166,7 @@ void BaseBinaryStar::CalculateMassTransfer(const double p_Dt) {
         }
     }
     
-	// Check for recycled pulsars. Not considering CEE as a way of recycling NSs.
-	//if (!m_CEDetails.CEEnow && m_Accretor->IsOneOf({ STELLAR_TYPE::NEUTRON_STAR })) {                                           // accretor is a neutron star
+	// Check for recycled pulsars.  
     if ((!m_CEDetails.CEEnow || OPTIONS->NeutronStarAccretionInCE() != NS_ACCRETION_IN_CE::ZERO)  && m_Accretor->IsOneOf({ STELLAR_TYPE::NEUTRON_STAR })) {
         m_Donor->SetRLOFOntoNS();                                                                                               // donor donated mass to a neutron star
         m_Accretor->SetRecycledNS();                                                                                            // accretor is (was) a recycled NS

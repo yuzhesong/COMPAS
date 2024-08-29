@@ -1811,9 +1811,9 @@ bool Options::AddOptions(OptionValues *p_Options, po::options_description *p_Opt
             ("Neutron star equation of state to use (" + AllowedOptionValuesFormatted("neutron-star-equation-of-state") + ", default = '" + p_Options->m_NeutronStarEquationOfState.typeString + "')").c_str()
         )
         (
-            "neutron-star-accretion-in-ce",                              
+            "neutron-star-accretion-in-CE",                              
             po::value<std::string>(&p_Options->m_NSAccretionInCE.typeString)->default_value(p_Options->m_NSAccretionInCE.typeString),                                                      
-            ("Neutron star accretion in CE to use (" + AllowedOptionValuesFormatted("neutron-star-accretion-in-ce") + ", default = '" + p_Options->m_NSAccretionInCE.typeString + "')").c_str()
+            ("Neutron star accretion in CE to use (" + AllowedOptionValuesFormatted("neutron-star-accretion-in-CE") + ", default = '" + p_Options->m_NSAccretionInCE.typeString + "')").c_str()
         )
         (
             "OB-mass-loss",                                      
@@ -2558,7 +2558,7 @@ std::vector<std::string> Options::AllowedOptionValues(const std::string p_Option
         case _("mode")                                              : POPULATE_RET(EVOLUTION_MODE_LABEL);                           break;
         case _("neutrino-mass-loss-BH-formation")                   : POPULATE_RET(NEUTRINO_MASS_LOSS_PRESCRIPTION_LABEL);          break;
         case _("neutron-star-equation-of-state")                    : POPULATE_RET(NS_EOSLabel);                                    break;
-        case _("neutron-star-accretion-in-ce")                      : POPULATE_RET(NS_ACCRETION_IN_CELabel);                                    break;
+        case _("neutron-star-accretion-in-CE")                      : POPULATE_RET(NS_ACCRETION_IN_CELabel);                                    break;
         case _("OB-mass-loss")                                      : POPULATE_RET(OB_MASS_LOSS_LABEL);                             break;
         case _("orbital-period-distribution")                       : POPULATE_RET(ORBITAL_PERIOD_DISTRIBUTION_LABEL);              break;
         case _("pulsar-birth-magnetic-field-distribution")          : POPULATE_RET(PULSAR_BIRTH_MAGNETIC_FIELD_DISTRIBUTION_LABEL); break;

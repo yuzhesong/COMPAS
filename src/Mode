@@ -1,0 +1,495 @@
+BaseBinaryStar.cpp:    bool sampled = OPTIONS->OptionSpecified("initial-mass-1") == 0 ||
+BaseBinaryStar.cpp:                   OPTIONS->OptionSpecified("initial-mass-2") == 0 ||
+BaseBinaryStar.cpp:                  (OPTIONS->OptionSpecified("metallicity") == 0 && OPTIONS->MetallicityDistribution() != METALLICITY_DISTRIBUTION::ZSOLAR) ||
+BaseBinaryStar.cpp:                  (OPTIONS->OptionSpecified("semi-major-axis") == 0 && OPTIONS->OptionSpecified("orbital-period") == 0) ||
+BaseBinaryStar.cpp:                  (OPTIONS->OptionSpecified("eccentricity") == 0 && OPTIONS->EccentricityDistribution() != ECCENTRICITY_DISTRIBUTION::ZERO);
+BaseBinaryStar.cpp:    kickParameters1.magnitudeRandomSpecified = OPTIONS->OptionSpecified("kick-magnitude-random-1") == 1;
+BaseBinaryStar.cpp:    kickParameters1.magnitudeRandom          = OPTIONS->KickMagnitudeRandom1();
+BaseBinaryStar.cpp:    kickParameters1.magnitudeSpecified       = OPTIONS->OptionSpecified("kick-magnitude-1") == 1;
+BaseBinaryStar.cpp:    kickParameters1.magnitude                = OPTIONS->KickMagnitude1();
+BaseBinaryStar.cpp:    kickParameters1.phiSpecified             = OPTIONS->OptionSpecified("kick-phi-1") == 1;
+BaseBinaryStar.cpp:    kickParameters1.phi                      = OPTIONS->SN_Phi1();
+BaseBinaryStar.cpp:    kickParameters1.thetaSpecified           = OPTIONS->OptionSpecified("kick-theta-1") == 1;
+BaseBinaryStar.cpp:    kickParameters1.theta                    = OPTIONS->SN_Theta1();
+BaseBinaryStar.cpp:    kickParameters1.meanAnomalySpecified     = OPTIONS->OptionSpecified("kick-mean-anomaly-1") == 1;
+BaseBinaryStar.cpp:    kickParameters1.meanAnomaly              = OPTIONS->SN_MeanAnomaly1();
+BaseBinaryStar.cpp:    kickParameters2.magnitudeRandomSpecified = OPTIONS->OptionSpecified("kick-magnitude-random-2") == 1;
+BaseBinaryStar.cpp:    kickParameters2.magnitudeRandom          = OPTIONS->KickMagnitudeRandom2();
+BaseBinaryStar.cpp:    kickParameters2.magnitudeSpecified       = OPTIONS->OptionSpecified("kick-magnitude-2") == 1;
+BaseBinaryStar.cpp:    kickParameters2.magnitude                = OPTIONS->KickMagnitude2();
+BaseBinaryStar.cpp:    kickParameters2.phiSpecified             = OPTIONS->OptionSpecified("kick-phi-2") == 1;
+BaseBinaryStar.cpp:    kickParameters2.phi                      = OPTIONS->SN_Phi2();
+BaseBinaryStar.cpp:    kickParameters2.thetaSpecified           = OPTIONS->OptionSpecified("kick-theta-2") == 1;
+BaseBinaryStar.cpp:    kickParameters2.theta                    = OPTIONS->SN_Theta2();
+BaseBinaryStar.cpp:    kickParameters2.meanAnomalySpecified     = OPTIONS->OptionSpecified("kick-mean-anomaly-2") == 1;
+BaseBinaryStar.cpp:    kickParameters2.meanAnomaly              = OPTIONS->SN_MeanAnomaly2();
+BaseBinaryStar.cpp:        double mass1 = OPTIONS->OptionSpecified("initial-mass-1") == 1                                                                  // user specified primary mass?
+BaseBinaryStar.cpp:                        ? OPTIONS->InitialMass1()                                                                                       // yes, use it
+BaseBinaryStar.cpp:                        : utils::SampleInitialMass(OPTIONS->InitialMassFunction(), 
+BaseBinaryStar.cpp:                                                   OPTIONS->InitialMassFunctionMax(), 
+BaseBinaryStar.cpp:                                                   OPTIONS->InitialMassFunctionMin(), 
+BaseBinaryStar.cpp:                                                   OPTIONS->InitialMassFunctionPower());                                                // no - asmple it
+BaseBinaryStar.cpp:        if (OPTIONS->OptionSpecified("initial-mass-2") == 1) {                                                                          // user specified secondary mass?
+BaseBinaryStar.cpp:            mass2 = OPTIONS->InitialMass2();                                                                                            // yes, use it
+BaseBinaryStar.cpp:            double q = OPTIONS->OptionSpecified("mass-ratio") == 1                                                                      // user specified mass ratio?
+BaseBinaryStar.cpp:                        ? OPTIONS->MassRatio()                                                                                          // yes, use it
+BaseBinaryStar.cpp:                        : utils::SampleMassRatio(OPTIONS->MassRatioDistribution(),
+BaseBinaryStar.cpp:                                                 OPTIONS->MassRatioDistributionMax(), 
+BaseBinaryStar.cpp:                                                 OPTIONS->MassRatioDistributionMin());                                                  // no - sample it
+BaseBinaryStar.cpp:        double metallicity = OPTIONS->OptionSpecified("metallicity") == 1                                                               // user specified metallicity?
+BaseBinaryStar.cpp:                                ? OPTIONS->Metallicity()                                                                                // yes, use it
+BaseBinaryStar.cpp:                                : utils::SampleMetallicity(OPTIONS->MetallicityDistribution(), 
+BaseBinaryStar.cpp:                                                           OPTIONS->MetallicityDistributionMax(), 
+BaseBinaryStar.cpp:                                                           OPTIONS->MetallicityDistributionMin());                                      // no, sample it
+BaseBinaryStar.cpp:        if (OPTIONS->OptionSpecified("semi-major-axis") == 1) {                                                                         // user specified semi-major axis?
+BaseBinaryStar.cpp:            m_SemiMajorAxis = OPTIONS->SemiMajorAxis();                                                                                 // yes, use it
+BaseBinaryStar.cpp:            if (OPTIONS->OptionSpecified("orbital-period") == 1) {                                                                      // user specified orbital period?
+BaseBinaryStar.cpp:                m_SemiMajorAxis = utils::ConvertPeriodInDaysToSemiMajorAxisInAU(mass1, mass2, OPTIONS->OrbitalPeriod());                // yes - calculate semi-major axis from period
+BaseBinaryStar.cpp:                if (OPTIONS->OptionSpecified("semi-major-axis-distribution") == 1 ||                                                    // user specified semi-major axis distribution, or
+BaseBinaryStar.cpp:                    OPTIONS->OptionSpecified("orbital-period-distribution" ) == 0) {                                                    // user did not specify oprbital period distribution
+BaseBinaryStar.cpp:                    m_SemiMajorAxis = utils::SampleSemiMajorAxis(OPTIONS->SemiMajorAxisDistribution(),                              
+BaseBinaryStar.cpp:                                                                 OPTIONS->SemiMajorAxisDistributionMax(), 
+BaseBinaryStar.cpp:                                                                 OPTIONS->SemiMajorAxisDistributionMin(),
+BaseBinaryStar.cpp:                                                                 OPTIONS->SemiMajorAxisDistributionPower(), 
+BaseBinaryStar.cpp:                                                                 OPTIONS->OrbitalPeriodDistributionMax(), 
+BaseBinaryStar.cpp:                                                                 OPTIONS->OrbitalPeriodDistributionMin(), 
+BaseBinaryStar.cpp:                    double orbitalPeriod = utils::SampleOrbitalPeriod(OPTIONS->OrbitalPeriodDistribution(),                              
+BaseBinaryStar.cpp:                                                                      OPTIONS->OrbitalPeriodDistributionMax(), 
+BaseBinaryStar.cpp:                                                                      OPTIONS->OrbitalPeriodDistributionMin());
+BaseBinaryStar.cpp:        m_Eccentricity = OPTIONS->OptionSpecified("eccentricity") == 1                                                                  // user specified eccentricity?
+BaseBinaryStar.cpp:                            ? OPTIONS->Eccentricity()                                                                                   // yes, use it
+BaseBinaryStar.cpp:                            : utils::SampleEccentricity(OPTIONS->EccentricityDistribution(), 
+BaseBinaryStar.cpp:                                                        OPTIONS->EccentricityDistributionMax(), 
+BaseBinaryStar.cpp:                                                        OPTIONS->EccentricityDistributionMin());                                        // no, sample it
+BaseBinaryStar.cpp:        m_Star1 = OPTIONS->OptionSpecified("rotational-frequency-1") == 1                                                               // user specified primary rotational frequency?
+BaseBinaryStar.cpp:                    ? new BinaryConstituentStar(m_RandomSeed, mass1, metallicity, kickParameters1, OPTIONS->RotationalFrequency1() * SECONDS_IN_YEAR) // yes - use it (convert from Hz to cycles per year - see BaseStar::CalculateZAMSAngularFrequency())
+BaseBinaryStar.cpp:        m_Star2 = OPTIONS->OptionSpecified("rotational-frequency-2") == 1                                                               // user specified secondary rotational frequency?
+BaseBinaryStar.cpp:                    ? new BinaryConstituentStar(m_RandomSeed, mass2, metallicity, kickParameters2, OPTIONS->RotationalFrequency2() * SECONDS_IN_YEAR) // yes - use it (convert from Hz to cycles per year - see BaseStar::CalculateZAMSAngularFrequency())
+BaseBinaryStar.cpp:        if (rlof && OPTIONS->AllowRLOFAtBirth()) {                                                                                      // over-contact binaries at birth allowed?    
+BaseBinaryStar.cpp:            m_Star1 = OPTIONS->OptionSpecified("rotational-frequency-1") == 1                                                           // user specified primary rotational frequency?
+BaseBinaryStar.cpp:                        ? new BinaryConstituentStar(m_RandomSeed, mass1, metallicity, kickParameters1, OPTIONS->RotationalFrequency1() * SECONDS_IN_YEAR) // yes - use it (convert from Hz to cycles per year - see BaseStar::CalculateZAMSAngularFrequency())
+BaseBinaryStar.cpp:            m_Star2 = OPTIONS->OptionSpecified("rotational-frequency-2") == 1                                                           // user specified secondary rotational frequency?
+BaseBinaryStar.cpp:                        ? new BinaryConstituentStar(m_RandomSeed, mass2, metallicity, kickParameters2, OPTIONS->RotationalFrequency2() * SECONDS_IN_YEAR) // yes - use it (convert from Hz to cycles per year - see BaseStar::CalculateZAMSAngularFrequency())
+BaseBinaryStar.cpp:        secondarySmallerThanMinimumMass = utils::Compare(mass2, OPTIONS->MinimumMassSecondary()) < 0;
+BaseBinaryStar.cpp:        bool ok = !((!OPTIONS->AllowRLOFAtBirth() && rlof) || (!OPTIONS->AllowTouchingAtBirth() && merger) || secondarySmallerThanMinimumMass);
+BaseBinaryStar.cpp:    if (OPTIONS->PopulationDataPrinting()) {                                                                                            // user wants to see details of binary?
+BaseBinaryStar.cpp:    if (OPTIONS->CHEMode() != CHE_MODE::NONE) {                                                                                                         // CHE enabled?
+BaseBinaryStar.cpp:    m_JLoss                                          = OPTIONS->MassTransferJloss();
+BaseBinaryStar.cpp:	m_FractionAccreted                               = OPTIONS->MassTransferFractionAccreted();
+BaseBinaryStar.cpp:            std::tie(ok, value) = OPTIONS->OptionValue(p_Property);                                                     // get the value
+BaseBinaryStar.cpp:    if (!OPTIONS->RLOFPrinting()) return ok;                            // do not print if printing option off
+BaseBinaryStar.cpp:    if (OPTIONS->HMXRBinaries()) {
+BaseBinaryStar.cpp:    if (!OPTIONS->BeBinaries()) return true;                // do not print if printing option off
+BaseBinaryStar.cpp:    if (!OPTIONS->RLOFPrinting()) return;                                                       // nothing to do
+BaseBinaryStar.cpp:    if (!OPTIONS->BeBinaries() || !IsBeBinary()) return;                                                            // nothing to do;
+BaseBinaryStar.cpp:    double alphaCE = OPTIONS->CommonEnvelopeAlpha();                                                                    // CE efficiency parameter
+BaseBinaryStar.cpp:    if (OPTIONS->AllowMainSequenceStarToSurviveCommonEnvelope()) {                                                      // allow main sequence stars to survive CEE?
+BaseBinaryStar.cpp:    if (OPTIONS->CommonEnvelopeFormalism() == CE_FORMALISM::ENERGY) {
+BaseBinaryStar.cpp:    else if ( OPTIONS->CommonEnvelopeFormalism() == CE_FORMALISM::TWO_STAGE ) {
+BaseBinaryStar.cpp:        if (!OPTIONS->AllowRadiativeEnvelopeStarToSurviveCommonEnvelope()) {                                            // stellar merger
+BaseBinaryStar.cpp:    if (OPTIONS->CHEMode() != CHE_MODE::NONE) m_Star1->SetOmega(omega);
+BaseBinaryStar.cpp:    if (OPTIONS->CHEMode() != CHE_MODE::NONE) m_Star2->SetOmega(omega);
+BaseBinaryStar.cpp:    if (m_RLOFDetails.immediateRLOFPostCEE == true && !OPTIONS->AllowImmediateRLOFpostCEToSurviveCommonEnvelope()) {    // is there immediate post-CE RLOF which is not allowed?
+BaseBinaryStar.cpp:    if (!(m_Star1->IsOneOf(MAIN_SEQUENCE) && m_Star2->IsOneOf(MAIN_SEQUENCE) && OPTIONS->EvolveMainSequenceMergers()))
+BaseBinaryStar.cpp:	switch (OPTIONS->MassTransferAngularMomentumLossPrescription()) {                                                       // which precription?
+BaseBinaryStar.cpp:                ? OPTIONS->MassTransferJlossMacLeodLinearFractionDegen()
+BaseBinaryStar.cpp:                : OPTIONS->MassTransferJlossMacLeodLinearFractionNonDegen();
+BaseBinaryStar.cpp:        case MT_ANGULAR_MOMENTUM_LOSS_PRESCRIPTION::ARBITRARY            : gamma = OPTIONS->MassTransferJloss(); break;
+BaseBinaryStar.cpp:    if (OPTIONS->UseMassTransfer() && m_MassTransfer) {
+BaseBinaryStar.cpp:        if (OPTIONS->UseMassLoss()) {                                                                                           // mass loss enabled?
+BaseBinaryStar.cpp:    if (!OPTIONS->UseMassTransfer()) return;                                                                                    // mass transfer not enabled - nothing to do
+BaseBinaryStar.cpp:    if (OPTIONS->CHEMode() != CHE_MODE::NONE && HasTwoOf({STELLAR_TYPE::CHEMICALLY_HOMOGENEOUS}) && HasStarsTouching()) {       // CHE enabled and both stars CH?
+BaseBinaryStar.cpp:    if (OPTIONS->MassTransferAngularMomentumLossPrescription() != MT_ANGULAR_MOMENTUM_LOSS_PRESCRIPTION::ARBITRARY) {           // arbitrary angular momentum loss prescription?
+BaseBinaryStar.cpp:    bool caseBBAlwaysStable           = OPTIONS->CaseBBStabilityPrescription() == CASE_BB_STABILITY_PRESCRIPTION::ALWAYS_STABLE;
+BaseBinaryStar.cpp:    bool caseBBAlwaysUnstable         = OPTIONS->CaseBBStabilityPrescription() == CASE_BB_STABILITY_PRESCRIPTION::ALWAYS_UNSTABLE;
+BaseBinaryStar.cpp:    bool caseBBAlwaysUnstableOntoNSBH = OPTIONS->CaseBBStabilityPrescription() == CASE_BB_STABILITY_PRESCRIPTION::ALWAYS_STABLE_ONTO_NSBH;
+BaseBinaryStar.cpp:    else if (OPTIONS->QCritPrescription() != QCRIT_PRESCRIPTION::NONE) {                                                        // Determine stability based on critical mass ratios
+BaseBinaryStar.cpp:    if ((!m_CEDetails.CEEnow || OPTIONS->NeutronStarAccretionInCE() != NS_ACCRETION_IN_CE::ZERO)  && m_Accretor->IsOneOf({ STELLAR_TYPE::NEUTRON_STAR })) {
+BaseBinaryStar.cpp:        if (OPTIONS->CHEMode() != CHE_MODE::NONE && HasTwoOf({STELLAR_TYPE::CHEMICALLY_HOMOGENEOUS})) {                         // CHE enabled and both stars CH?
+BaseBinaryStar.cpp:		    if (OPTIONS->CirculariseBinaryDuringMassTransfer()) {                                                               // circularise binary to the periapsis separation?
+BaseBinaryStar.cpp:                m_SemiMajorAxis *= OPTIONS->AngularMomentumConservationDuringCircularisation()                                  // yes - conserve angular momentum?
+BaseBinaryStar.cpp:    if (OPTIONS->CHEMode() != CHE_MODE::NONE) m_Star1->SetOmega(omega);
+BaseBinaryStar.cpp:    if (OPTIONS->CHEMode() != CHE_MODE::NONE) m_Star2->SetOmega(omega);
+BaseBinaryStar.cpp:        !(OPTIONS->CHEMode() != CHE_MODE::NONE && HasTwoOf({STELLAR_TYPE::CHEMICALLY_HOMOGENEOUS}))) {                  // yes - avoid CEE if CH+CH
+BaseBinaryStar.cpp:    if (!m_Unbound && OPTIONS->TidesPrescription() != TIDES_PRESCRIPTION::NONE) {
+BaseBinaryStar.cpp:        if (OPTIONS->TidesPrescription() == TIDES_PRESCRIPTION::KAPIL2024) {
+BaseBinaryStar.cpp:    if (OPTIONS->PopulationDataPrinting()) {
+BaseBinaryStar.cpp:    if (!OPTIONS->TimestepsFileName().empty()) {                                                                                            // have timesteps filename?
+BaseBinaryStar.cpp:        std::tie(error, timesteps) = utils::ReadTimesteps(OPTIONS->TimestepsFileName());                                                    // read timesteps from file
+BaseBinaryStar.cpp:            dt = std::min(m_Star1->CalculateTimestep(), m_Star2->CalculateTimestep()) * OPTIONS->TimestepMultiplier() / 1000.0;             // calculate timestep - make first step small
+BaseBinaryStar.cpp:            else if (!OPTIONS->EvolveDoubleWhiteDwarfs() && IsWDandWD()) {                                                                  // double WD and their evolution is not enabled?
+BaseBinaryStar.cpp:            else if (HasOneOf({ STELLAR_TYPE::MASSLESS_REMNANT }) && !OPTIONS->EvolveMainSequenceMergers()) {                               // at least one massless remnant and not evolving MS merger products?
+BaseBinaryStar.cpp:                if (m_Star1->IsOneOf(MAIN_SEQUENCE) && m_Star2->IsOneOf(MAIN_SEQUENCE) && OPTIONS->EvolveMainSequenceMergers())             // yes - both MS and evolving MS merger products?
+BaseBinaryStar.cpp:            else if (IsUnbound() && !OPTIONS->EvolveUnboundSystems()) {                                                                     // binary is unbound and we don't want unbound systems?
+BaseBinaryStar.cpp:                if (OPTIONS->RLOFPrinting()) StashRLOFProperties(MASS_TRANSFER_TIMING::PRE_MT);                                             // stash properties immediately pre-Mass Transfer 
+BaseBinaryStar.cpp:                    if (m_Star1->IsOneOf(MAIN_SEQUENCE) && m_Star2->IsOneOf(MAIN_SEQUENCE) && OPTIONS->EvolveMainSequenceMergers())         // yes - both MS and evolving MS merger products?
+BaseBinaryStar.cpp:                    if (!OPTIONS->EvolveUnboundSystems() || IsDCO()) {                                                                      // should we evolve unbound systems?
+BaseBinaryStar.cpp:                        if (!(OPTIONS->EvolvePulsars() && HasOneOf({ STELLAR_TYPE::NEUTRON_STAR }))) {                                      // evolve pulsar?
+BaseBinaryStar.cpp:                        else if (m_Time > OPTIONS->MaxEvolutionTime()) {                                                                    // evolution time exceeds maximum?
+BaseBinaryStar.cpp:                        else if (!OPTIONS->EvolveDoubleWhiteDwarfs() && IsWDandWD()) {                                                      // double WD and their evolution is not enabled?
+BaseBinaryStar.cpp:                        else if (HasOneOf({ STELLAR_TYPE::MASSLESS_REMNANT }) && !OPTIONS->EvolveMainSequenceMergers()) {                   // at least one massless remnant and not evolving MS merger products?
+BaseBinaryStar.cpp:                            if (m_Star1->IsOneOf(MAIN_SEQUENCE) && m_Star2->IsOneOf(MAIN_SEQUENCE) && OPTIONS->EvolveMainSequenceMergers()) // yes - both MS and evolving MS merger products?
+BaseBinaryStar.cpp:                        else if (IsUnbound() && !OPTIONS->EvolveUnboundSystems()) {                                                         // binary is unbound and we don't want unbound systems?
+BaseBinaryStar.cpp:            if (stepNum >= OPTIONS->MaxNumberOfTimestepIterations()) evolutionStatus = EVOLUTION_STATUS::STEPS_UP;                          // number of timesteps for evolution exceeds maximum
+BaseBinaryStar.cpp:                    dt = std::min(m_Star1->CalculateTimestep(), m_Star2->CalculateTimestep()) * OPTIONS->TimestepMultiplier();              // calculate new timestep
+BaseBinaryStar.h:                                    return OPTIONS->SwitchLog() ?                                                   // switch logging enabled?
+BaseBinaryStar.h:        return OPTIONS->DetailedOutput() ? LOGGING->LogBSEDetailedOutput(this, p_Id, p_RecordType) : true;
+BaseBinaryStar.h:        return OPTIONS->EvolvePulsars() ? LOGGING->LogBSEPulsarEvolutionParameters(this, p_RecordType) : true;
+BaseBinaryStar.h:        return (OPTIONS->RocketKickMagnitude1() > 0) || (OPTIONS->RocketKickMagnitude2() > 0);
+BaseStar.cpp:    m_BaryonicMassOfMaximumNeutronStarMass     = (0.075 * OPTIONS->MaximumNeutronStarMass() * OPTIONS->MaximumNeutronStarMass()) + OPTIONS->MaximumNeutronStarMass();
+BaseStar.cpp:            std::tie(ok, value) = OPTIONS->OptionValue(p_Property);
+BaseStar.cpp:    if (OPTIONS->CommonEnvelopeLambdaNanjingUseRejuvenatedMass()) mass = m_Mass0;                               // Use rejuvenated mass to calculate lambda instead of true birth mass
+BaseStar.cpp:    if (OPTIONS->CommonEnvelopeLambdaNanjingEnhanced()) {                                                       // If using enhanced Nanjing lambdas
+BaseStar.cpp:        if (OPTIONS->CommonEnvelopeLambdaNanjingInterpolateInMass()) {
+BaseStar.cpp:            if (OPTIONS->CommonEnvelopeLambdaNanjingInterpolateInMetallicity()) {
+BaseStar.cpp:            if (OPTIONS->CommonEnvelopeLambdaNanjingInterpolateInMetallicity()) {
+BaseStar.cpp:    ZETA_PRESCRIPTION zetaPrescription = OPTIONS->StellarZetaPrescription();
+BaseStar.cpp:        QCRIT_PRESCRIPTION qCritPrescription = OPTIONS->QCritPrescription();
+BaseStar.cpp:    m_Lambdas.fixed          = OPTIONS->CommonEnvelopeLambda();
+BaseStar.cpp:	m_Lambdas.kruckow        = CalculateLambdaKruckow(m_Radius, OPTIONS->CommonEnvelopeSlopeKruckow());
+BaseStar.cpp:    switch (OPTIONS->MassTransferRejuvenationPrescription()) {                          // which prescription
+BaseStar.cpp:    return OPTIONS->LuminousBlueVariableFactor() * 1.0E-4;
+BaseStar.cpp:        rate = OPTIONS->WolfRayetFactor() * 1.0E-13 * PPOW(m_Luminosity, 1.5) * PPOW(m_Metallicity / ZSOL, 0.86) * (1.0 - p_Mu);
+BaseStar.cpp:            Mdot           = PPOW(10.0, logMdot) * OPTIONS->WolfRayetFactor();
+BaseStar.cpp:    double LBVRate = CalculateMassLossRateLBV(OPTIONS->LuminousBlueVariablePrescription());                         // start with LBV winds (can be, and is often, 0.0)
+BaseStar.cpp:        OPTIONS->LuminousBlueVariablePrescription() == LBV_PRESCRIPTION::HURLEY_ADD ) {                             // check whether we should add other winds to the LBV winds (always for HURLEY_ADD prescription, only if not in LBV regime for others)
+BaseStar.cpp:            otherWindsRate = CalculateMassLossRateHurley() * OPTIONS->CoolWindMassLossMultiplier();                 // Apply cool wind mass loss multiplier
+BaseStar.cpp:    double LBVRate         = CalculateMassLossRateLBV(OPTIONS->LuminousBlueVariablePrescription());                 // start with LBV winds (can be, and is often, 0.0)
+BaseStar.cpp:        OPTIONS->LuminousBlueVariablePrescription() == LBV_PRESCRIPTION::HURLEY_ADD ) {                             // check whether we should add other winds to the LBV winds (always for HURLEY_ADD prescription, only if not in LBV regime for others)
+BaseStar.cpp:            otherWindsRate         = CalculateMassLossRateRSG(OPTIONS->RSGMassLoss()); 
+BaseStar.cpp:            otherWindsRate = CalculateMassLossRateHurley() * OPTIONS->CoolWindMassLossMultiplier();                 // apply cool wind mass loss multiplier
+BaseStar.cpp:            otherWindsRate         = CalculateMassLossRateVMS(OPTIONS->VMSMassLoss());        
+BaseStar.cpp:            otherWindsRate         = CalculateMassLossRateOB(OPTIONS->OBMassLoss());
+BaseStar.cpp: * Calls relevant mass loss function based on mass loss prescription given in program options (OPTIONS->massLossPrescription)
+BaseStar.cpp:    if (OPTIONS->UseMassLoss()) {
+BaseStar.cpp:        switch (OPTIONS->MassLossPrescription()) {                                                              // which prescription?
+BaseStar.cpp:        mDot = mDot * OPTIONS->OverallWindMassLossMultiplier();                                                 // apply overall wind mass loss multiplier
+BaseStar.cpp:    if (OPTIONS->UseMassLoss()) {                                               // only if using mass loss (program option)
+BaseStar.cpp:        if (OPTIONS->CheckPhotonTiringLimit()) {
+BaseStar.cpp:    if (OPTIONS->UseMassLoss()) {
+BaseStar.cpp:    switch (OPTIONS->MassTransferAccretionEfficiencyPrescription()) {
+BaseStar.cpp:            acceptanceRate   = min(OPTIONS->MassTransferCParameter() * p_AccretorMassRate, p_DonorMassRate);
+BaseStar.cpp:            fractionAccreted = OPTIONS->MassTransferFractionAccreted();
+BaseStar.cpp:    switch( OPTIONS->MassTransferThermallyLimitedVariation() ) {
+BaseStar.cpp:    switch (OPTIONS->RotationalVelocityDistribution()) {                                // which prescription?
+BaseStar.cpp:	if (utils::Compare(p_RemnantMass, OPTIONS->MaximumNeutronStarMass()) <  0) {
+BaseStar.cpp:		muKick = max(OPTIONS->MullerMandelKickMultiplierNS() * (p_COCoreMass - p_RemnantMass) / p_RemnantMass, 0.0);
+BaseStar.cpp:		muKick = max(OPTIONS->MullerMandelKickMultiplierBH() * (p_COCoreMass - p_RemnantMass) / p_RemnantMass, 0.0);
+BaseStar.cpp:		remnantKick = muKick * (1.0 + gsl_cdf_gaussian_Pinv(rand, OPTIONS->MullerMandelSigmaKick()));
+BaseStar.cpp:    switch (OPTIONS->KickMagnitudeDistribution()) {                                             // which distribution
+BaseStar.cpp:            kickMagnitude = DrawKickMagnitudeDistributionFlat(OPTIONS->KickMagnitudeDistributionMaximum(), p_Rand);
+BaseStar.cpp:    return kickMagnitude / OPTIONS->KickScalingFactor();
+BaseStar.cpp:			    sigma = OPTIONS->KickMagnitudeDistributionSigmaForECSN();
+BaseStar.cpp:			    sigma = OPTIONS->KickMagnitudeDistributionSigmaForUSSN();
+BaseStar.cpp:                if( utils::SNEventType(m_SupernovaDetails.events.current) == SN_EVENT::PPISN && !OPTIONS->NatalKickForPPISN() ) {
+BaseStar.cpp:                        sigma = OPTIONS->KickMagnitudeDistributionSigmaCCSN_NS();
+BaseStar.cpp:                        sigma = OPTIONS->KickMagnitudeDistributionSigmaCCSN_BH();
+BaseStar.cpp:    if( OPTIONS->RadialChangeFraction()!=0 && radialExpansionTimescale > 0.0 )                              // if radial expansion timescale was computed
+BaseStar.cpp:        dt = min(dt, OPTIONS->RadialChangeFraction()*radialExpansionTimescale);
+BaseStar.cpp:    if( OPTIONS->MassChangeFraction()!=0 && massChangeTimescale > 0.0 )                                     // if mass change timescale was computed
+BaseStar.cpp:        dt = min(dt, OPTIONS->MassChangeFraction()*massChangeTimescale);
+BaseStar.h:        return OPTIONS->DetailedOutput() ? LOGGING->LogSSEDetailedOutput(this, p_Id, p_RecordType) : true;                                                                          // Write record to SSE Detailed Output log file
+BaseStar.h:        return OPTIONS->SwitchLog() ? (LOGGING->ObjectSwitchingPersistence() == OBJECT_PERSISTENCE::PERMANENT ? LOGGING->LogSSESwitchLog(this) : true) : true;                                                                                                        // Write record to SSE Switchlog log file
+BaseStar.h:    virtual double              CalculateEddingtonCriticalRate() const                                                  { return 2.08E-3 / 1.7 * m_Radius * MYR_TO_YEAR * OPTIONS->EddingtonAccretionFactor() ; }                          // Hurley+, 2002, Eq. (67)
+BH.cpp:    switch (OPTIONS->NeutrinoMassLossAssumptionBH()) {                                      // which assumption?
+BH.cpp:            gravitationalMass = p_BaryonicMass * (1.0 - OPTIONS->NeutrinoMassLossValueBH());
+BH.cpp:            gravitationalMass = p_BaryonicMass - OPTIONS->NeutrinoMassLossValueBH();
+BH.cpp:    switch (OPTIONS->BlackHoleKicks()) {                            // which BH kicks option specified?
+BinaryConstituentStar.cpp:     switch (OPTIONS->CommonEnvelopeMassAccretionPrescription()) {                                              // which prescription?
+BinaryConstituentStar.cpp:            deltaMass = OPTIONS->CommonEnvelopeMassAccretionConstant();                                         // use program option
+BinaryConstituentStar.cpp:            deltaMass = RAND->Random(OPTIONS->CommonEnvelopeMassAccretionMin(), OPTIONS->CommonEnvelopeMassAccretionMax()); // uniform random distribution - Oslowski+ (2011)
+BinaryConstituentStar.cpp:            deltaMass = std::min(OPTIONS->CommonEnvelopeMassAccretionMax(), std::max(OPTIONS->CommonEnvelopeMassAccretionMin(), m * p_CompanionRadius + c));
+BinaryConstituentStar.cpp:    switch (OPTIONS->CommonEnvelopeLambdaPrescription()) {                      // which common envelope lambda prescription?
+BinaryConstituentStar.cpp:    m_CEDetails.lambda *= OPTIONS->CommonEnvelopeLambdaMultiplier();            // multiply by constant (program option, default = 1.0)
+BinaryConstituentStar.cpp:    if ( OPTIONS->CommonEnvelopeFormalism() == CE_FORMALISM::TWO_STAGE )
+changelog.h://                                       - removed redundant OPTIONS->MassTransferCriticalMassRatioHeliumGiant() from qcritflag if statement in BaseBinaryStar::CalculateMassTransfer()
+changelog.h://                                       - fixed OPTIONS->FixedMetallicity() - always returned true, now returns actual value
+changelog.h://                                       - fixed OPTIONS->OutputPathString() - was always returning raw option instead of fully qualified path
+changelog.h://                                           (a) m_JLoss = OPTIONS->MassTransferJloss();
+changelog.h://                                           (b) m_FractionAccreted = OPTIONS->MassTransferFractionAccreted();
+changelog.h://                                       - added OPTIONS->ZetaAdiabaticArbitrary() - option existed, but Options code had no function to retrieve value
+changelog.h://                                       - added OPTIONS->MassTransferFractionAccreted() to options - erroneously not ported from legacy code
+changelog.h://                                       - added ProgramOptionDetails() to Options.cpp and OPTIONS->OptionsDetails() in preparation for change in output functionality
+changelog.h://                                      - fixed issue #162 OPTIONS->UseFixedUK() always returns FALSE.  Now returns TRUE if user supplies a fixed kick velocity via --fix-dimensionless-kick-velocity command line option
+changelog.h://                                      - OPTIONS->UseFixedUK() returns TRUE when user supplies -ve value via --fix-dimensionless-kick-velocity.  Now return TRUE iff the user supplies a value >=0 via --fix-dimensionless-kick-velocity
+changelog.h://                                      - Removed m_LBVfactor variable from BaseStar - use OPTIONS->LuminousBlueVariableFactor()
+changelog.h://                                      - Removed m_LBVfactor variable from BaseStar - use OPTIONS->WolfRayetFactor()
+changelog.h://                                      - Removed variable 'alpha' from BinaryCEDetails struct - use OPTIONS->CommonEnvelopeAlpha()
+changelog.h://                                      - removed the fixed constant MULLERMANDEL_MAXNS; instead, OPTIONS->MaximumNeutronStarMass() is used for consistency (see issue #1114)
+CHeB.cpp:    return (OPTIONS->CommonEnvelopeAlphaThermal() * lambdaBG[0]) + ((1.0 - OPTIONS->CommonEnvelopeAlphaThermal()) * lambdaBG[1]);
+CHeB.cpp:    return (OPTIONS->CommonEnvelopeAlphaThermal() * lambdaBG[0]) + ((1.0 - OPTIONS->CommonEnvelopeAlphaThermal()) * lambdaBG[1]);
+CHeB.cpp:    switch (OPTIONS->EnvelopeStatePrescription()) {                                                 // which envelope prescription?
+CHeB.cpp:            envelope =  utils::Compare(Temperature() * TSOL, OPTIONS->ConvectiveEnvelopeTemperatureThreshold()) > 0 ? ENVELOPE::RADIATIVE : ENVELOPE::CONVECTIVE;  // Envelope is radiative if temperature exceeds fixed threshold, otherwise convective
+CHeB.h:    bool            ShouldEnvelopeBeExpelledByPulsations() const { return ( OPTIONS->ExpelConvectiveEnvelopeAboveLuminosityThreshold() && DetermineEnvelopeType() == ENVELOPE::CONVECTIVE && utils::Compare( log10(m_Luminosity/m_Mass), OPTIONS->LuminosityToMassThreshold() ) >= 0 ) ; }                             // Envelope of convective star with luminosity to mass ratio beyond threshold should be expelled
+CH.h:    bool            ShouldEvolveOnPhase() const         { return m_Age < m_Timescales[static_cast<int>(TIMESCALE::tMS)] && (OPTIONS->OptimisticCHE() || m_Omega >= m_OmegaCHE); }   // Evolve on CHE phase if age in MS timescale and spinning at least as fast as CHE threshold
+EAGB.cpp:    return (OPTIONS->CommonEnvelopeAlphaThermal() * lambdaBG[0]) + ((1.0 - OPTIONS->CommonEnvelopeAlphaThermal()) * lambdaBG[1]);
+EAGB.cpp:    return (OPTIONS->CommonEnvelopeAlphaThermal() * lambdaBG[0]) + ((1.0 - OPTIONS->CommonEnvelopeAlphaThermal()) * lambdaBG[1]);
+Errors.cpp:    if (p_Prefix == WARNING_PREFIX && !OPTIONS->EnableWarnings()) return false;                                                                      // do nothing
+GiantBranch.cpp:        qCrit = OPTIONS->MassTransferCriticalMassRatioGiantDegenerateAccretor();
+GiantBranch.cpp:        qCrit = OPTIONS->MassTransferCriticalMassRatioGiantNonDegenerateAccretor();
+GiantBranch.cpp:            zeta = OPTIONS->ZetaAdiabaticArbitrary();
+GiantBranch.cpp:            zeta = OPTIONS->ZetaRadiativeEnvelopeGiant();
+GiantBranch.cpp:    if (utils::Compare(p_COCoreMass, MULLERMANDEL_M1) < 0 || utils::Compare(p_HeCoreMass, OPTIONS->MaximumNeutronStarMass()) <= 0 ) {
+GiantBranch.cpp:		    while (remnantMass<OPTIONS->MaximumNeutronStarMass() || remnantMass > p_HeCoreMass) {
+GiantBranch.cpp:		    while (remnantMass < MULLERMANDEL_MINNS || remnantMass > OPTIONS->MaximumNeutronStarMass() || remnantMass > p_HeCoreMass) {
+GiantBranch.cpp:            while (remnantMass < MULLERMANDEL_MINNS || remnantMass > OPTIONS->MaximumNeutronStarMass() || remnantMass > p_HeCoreMass) {
+GiantBranch.cpp:            while (remnantMass < MULLERMANDEL_MINNS || remnantMass > OPTIONS->MaximumNeutronStarMass() || remnantMass > p_HeCoreMass) {
+GiantBranch.cpp:    switch (OPTIONS->FryerSupernovaEngine()) {                                                                                     // which SN_ENGINE?
+GiantBranch.cpp:    baryonicRemnantMass  = 1.2 + 0.05 * OPTIONS->Fryer22fmix() + 0.01 * pow( (p_COCoreMass/OPTIONS->Fryer22fmix()), 2.0) + exp( OPTIONS->Fryer22fmix() * (p_COCoreMass - OPTIONS->Fryer22Mcrit()) ) ;  // equation 5. 
+GiantBranch.cpp:    switch (OPTIONS->FryerSupernovaEngine()) {                                                                                     // which SN_ENGINE?
+GiantBranch.cpp:    switch (OPTIONS->RemnantMassPrescription()) {                                                           // which prescription?
+GiantBranch.cpp:    if (OPTIONS->RemnantMassPrescription() == REMNANT_MASS_PRESCRIPTION::MULLER2016) {
+GiantBranch.cpp:    else if (OPTIONS->RemnantMassPrescription() == REMNANT_MASS_PRESCRIPTION::MULLERMANDEL) {
+GiantBranch.cpp:        if (utils::Compare(m_Mass, OPTIONS->MaximumNeutronStarMass() ) > 0)
+GiantBranch.cpp:    else if (OPTIONS->RemnantMassPrescription() == REMNANT_MASS_PRESCRIPTION::HURLEY2000) {
+GiantBranch.cpp:    else if (utils::Compare(m_Mass, OPTIONS->MaximumNeutronStarMass()) > 0) {
+GiantBranch.cpp:    if (!m_MassTransferDonorHistory.empty() || (OPTIONS->AllowNonStrippedECSN())) {         // If progenitor has never been a MT donor, is it allowed to ECSN?
+GiantBranch.cpp:    switch (OPTIONS->PulsationalPairInstabilityPrescription()) {                                        // which prescription?
+GiantBranch.cpp:        if (                             OPTIONS->UsePulsationalPairInstability()              &&
+GiantBranch.cpp:            utils::Compare(m_HeCoreMass, OPTIONS->PulsationalPairInstabilityLowerLimit()) >= 0 &&
+GiantBranch.cpp:            utils::Compare(m_HeCoreMass, OPTIONS->PulsationalPairInstabilityUpperLimit()) <= 0) {   // Pulsational Pair Instability Supernova
+GiantBranch.cpp:        else if (                        OPTIONS->UsePairInstabilitySupernovae()    &&
+GiantBranch.cpp:            utils::Compare(m_HeCoreMass, OPTIONS->PairInstabilityLowerLimit()) >= 0 &&
+GiantBranch.cpp:            utils::Compare(m_HeCoreMass, OPTIONS->PairInstabilityUpperLimit()) <= 0) {              // Pair Instability Supernova
+GiantBranch.cpp:        if (OPTIONS->EvolutionMode() == EVOLUTION_MODE::SSE && m_ObjectPersistence == OBJECT_PERSISTENCE::PERMANENT) {
+HeGB.cpp:                ? OPTIONS->MassTransferCriticalMassRatioHeliumGiantDegenerateAccretor()     // degenerate accretor
+HeGB.cpp:                : OPTIONS->MassTransferCriticalMassRatioHeliumGiantNonDegenerateAccretor(); // non-degenerate accretor
+HeHG.cpp:    switch (OPTIONS->MassTransferRejuvenationPrescription()) {          // which rejuvenation prescription?
+HeHG.cpp:    switch (OPTIONS->EnvelopeStatePrescription()) {                                                  // which envelope prescription?
+HeHG.cpp:            envelope =  utils::Compare(Temperature() *  TSOL, OPTIONS->ConvectiveEnvelopeTemperatureThreshold()) > 0 ? ENVELOPE::RADIATIVE : ENVELOPE::CONVECTIVE;  // Envelope is radiative if temperature exceeds fixed threshold, otherwise convective
+HeHG.cpp:                ? OPTIONS->MassTransferCriticalMassRatioHeliumHGDegenerateAccretor()        // degenerate accretor
+HeHG.cpp:                : OPTIONS->MassTransferCriticalMassRatioHeliumHGNonDegenerateAccretor();    // non-degenerate accretor
+HeHG.cpp:            stellarType = (utils::Compare(m_COCoreMass, OPTIONS->MCBUR1() ) < 0) ? STELLAR_TYPE::CARBON_OXYGEN_WHITE_DWARF : STELLAR_TYPE::OXYGEN_NEON_WHITE_DWARF;
+HeMS.cpp:    switch (OPTIONS->MassTransferRejuvenationPrescription()) {
+HeMS.cpp:    if (OPTIONS->WRMassLoss() == WR_MASS_LOSS::SANDERVINK2023) {
+HeMS.cpp:    else if (OPTIONS->WRMassLoss() == WR_MASS_LOSS::SHENAR2019) {
+HeMS.cpp:                ? OPTIONS->MassTransferCriticalMassRatioHeliumMSDegenerateAccretor()        // degenerate accretor
+HeMS.cpp:                : OPTIONS->MassTransferCriticalMassRatioHeliumMSNonDegenerateAccretor();    // non-degenerate accretor
+HeMS.h:            double          CalculateZetaConstantsByEnvelope(ZETA_PRESCRIPTION p_ZetaPrescription)                  { return OPTIONS->ZetaMainSequence(); }                                         // A HeMS star is treated as any other MS star for Zeta calculation purposes
+HG.cpp:    return (OPTIONS->CommonEnvelopeAlphaThermal() * lambdaBG[0]) + ((1.0 - OPTIONS->CommonEnvelopeAlphaThermal()) * lambdaBG[1]);
+HG.cpp:    return (OPTIONS->CommonEnvelopeAlphaThermal() * lambdaBG[0]) + ((1.0 - OPTIONS->CommonEnvelopeAlphaThermal()) * lambdaBG[1]);
+HG.cpp:    switch (OPTIONS->MassTransferRejuvenationPrescription()) {          // which rejuvenation prescription?
+HG.cpp:                ? OPTIONS->MassTransferCriticalMassRatioHGDegenerateAccretor()              // degenerate accretor
+HG.cpp:                : OPTIONS->MassTransferCriticalMassRatioHGNonDegenerateAccretor();          // non-degenerate accretor
+HG.cpp:    switch (OPTIONS->EnvelopeStatePrescription()) {                                                  // which envelope prescription?
+HG.cpp:            envelope =  utils::Compare(Temperature() * TSOL, OPTIONS->ConvectiveEnvelopeTemperatureThreshold()) > 0 ? ENVELOPE::RADIATIVE : ENVELOPE::CONVECTIVE;  // Envelope is radiative if temperature exceeds fixed threshold, otherwise convective
+Log.cpp:                size_t IOBufSize = OPTIONS->HDF5BufferSize() * chunkSize;                                               // IO buffer size
+Log.cpp:        m_OptionDetails = OPTIONS->CmdLineOptionsDetails();                                                                 // get commandline option details
+Log.cpp:                string fileExt    = "." + LOGFILETYPEFileExt.at(OPTIONS->LogfileType());                                    // file extension for HDF5 files
+Log.cpp:            if (OPTIONS->StoreInputFiles()) {                                                                               // user wants input files stored in output container?
+Log.cpp:                if (!OPTIONS->GridFilename().empty()) {                                                                     // user specified a grid file?
+Log.cpp:                        boost::filesystem::path srcPath(OPTIONS->GridFilename());                                           // grid file fully-qualified name
+Log.cpp:                        (void)boost::filesystem::copy_file(OPTIONS->GridFilename(), dstFn, BOOST_OVERWRITE_EXISTING);       // copy grid file - overwrite any existing file (shouldn't be one, but just in case we want this one)
+Log.cpp:                        Squawk("ERROR: Unable to copy grid file " + OPTIONS->GridFilename() + " to output container " + dstPath); // announce error
+Log.cpp:                if (m_Enabled && !OPTIONS->LogfileDefinitionsFilename().empty()) {                                          // user specified a logfile-definitions file?
+Log.cpp:                        boost::filesystem::path srcPath(OPTIONS->LogfileDefinitionsFilename());                             // logfile-definitions file fully-qualified name
+Log.cpp:                        (void)boost::filesystem::copy_file(OPTIONS->LogfileDefinitionsFilename(), dstFn, BOOST_OVERWRITE_EXISTING); // copy logfile-definitions file - overwrite any existing file (shouldn't be one, but just in case we want this one)
+Log.cpp:                        Squawk("ERROR: Unable to copy logfile-definitions file " + OPTIONS->LogfileDefinitionsFilename() + " to output container " + dstPath); // announce error
+Log.cpp:        unsigned long int actualRandomSeed = OPTIONS->FixedRandomSeedCmdLine() ? OPTIONS->RandomSeedCmdLine() : RAND->DefaultSeed();    // actual random seed used
+Log.cpp:                            if (objectsRequested >= 0 && (int)OPTIONS->nObjectsToEvolve() == objectsRequested) derivation = "USER_SUPPLIED"; // should be right most of the time (not critical)
+Log.cpp:                                if (OPTIONS->PrintBoolAsString())
+Log.cpp:            if (OPTIONS->EvolutionMode() == EVOLUTION_MODE::SSE)
+Log.cpp:            if (OPTIONS->EvolutionMode() == EVOLUTION_MODE::SSE) {
+Log.cpp:        string fileext  = LOGFILETYPEFileExt.at(OPTIONS->LogfileType());                                            // file extension
+Log.cpp:        details = std::make_tuple(TYPENAME::STRING, OPTIONS->NotesHdrs(p_Idx), "-", 0, 1);  // yes - construct details
+Log.cpp:                if ((OPTIONS->AddOptionsToSysParms() == ADD_OPTIONS_TO_SYSPARMS::ALWAYS) ||                                         // always add option columns?                   
+Log.cpp:                   ((OPTIONS->AddOptionsToSysParms() == ADD_OPTIONS_TO_SYSPARMS::GRID) &&                                           // add for grids?
+Log.cpp:                   (!OPTIONS->GridFilename().empty() || OPTIONS->CommandLineGrid()))) {                                             // have grid file or ranges/sets?
+Log.cpp:                if ((OPTIONS->AddOptionsToSysParms() == ADD_OPTIONS_TO_SYSPARMS::ALWAYS) ||                                         // always add option columns?                   
+Log.cpp:                   ((OPTIONS->AddOptionsToSysParms() == ADD_OPTIONS_TO_SYSPARMS::GRID) &&                                           // add for grids?
+Log.cpp:                   (!OPTIONS->GridFilename().empty() || OPTIONS->CommandLineGrid()))) {                                             // have grid file or ranges/sets?
+Log.cpp:            if (OPTIONS->PrintBoolAsString()) {                                                                     // print bool values as strings "TRUE" or "FALSE"?
+Log.cpp:                    fileDetails.filename         = OPTIONS->LogfileBeBinaries();
+Log.cpp:                    fileDetails.recordTypes      = OPTIONS->LogfileBeBinariesRecordTypes();
+Log.cpp:                    fileDetails.filename         = OPTIONS->LogfileCommonEnvelopes();
+Log.cpp:                    fileDetails.recordTypes      = OPTIONS->LogfileCommonEnvelopesRecordTypes();
+Log.cpp:                    fileDetails.filename         = OPTIONS->LogfileDoubleCompactObjects();
+Log.cpp:                    fileDetails.recordTypes      = OPTIONS->LogfileDoubleCompactObjectsRecordTypes();
+Log.cpp:                    fileDetails.filename         = OPTIONS->LogfilePulsarEvolution();
+Log.cpp:                    fileDetails.recordTypes      = OPTIONS->LogfilePulsarEvolutionRecordTypes();
+Log.cpp:                    fileDetails.filename         = OPTIONS->LogfileRLOFParameters();
+Log.cpp:                    fileDetails.recordTypes      = OPTIONS->LogfileRLOFParametersRecordTypes();
+Log.cpp:                    fileDetails.filename         = OPTIONS->LogfileSupernovae();
+Log.cpp:                    fileDetails.recordTypes      = OPTIONS->LogfileSupernovaeRecordTypes();
+Log.cpp:                    fileDetails.filename         = OPTIONS->LogfileSwitchLog();
+Log.cpp:                    fileDetails.filename         = OPTIONS->LogfileSystemParameters();
+Log.cpp:                    fileDetails.recordTypes      = OPTIONS->LogfileSystemParametersRecordTypes();
+Log.cpp:                    if ((OPTIONS->AddOptionsToSysParms() == ADD_OPTIONS_TO_SYSPARMS::ALWAYS) ||                                                 // always add option columns?                   
+Log.cpp:                       ((OPTIONS->AddOptionsToSysParms() == ADD_OPTIONS_TO_SYSPARMS::GRID) &&                                                   // add for grids?
+Log.cpp:                       (!OPTIONS->GridFilename().empty() || OPTIONS->CommandLineGrid()))) {                                                     // have grid file or ranges/sets?
+Log.cpp:                    fileDetails.filename         = OPTIONS->LogfileSupernovae();
+Log.cpp:                    fileDetails.recordTypes      = OPTIONS->LogfileSupernovaeRecordTypes();
+Log.cpp:                    fileDetails.filename         = OPTIONS->LogfileSwitchLog();
+Log.cpp:                    fileDetails.filename         = OPTIONS->LogfileSystemParameters();
+Log.cpp:                    fileDetails.recordTypes      = OPTIONS->LogfileSystemParametersRecordTypes();
+Log.cpp:                    if ((OPTIONS->AddOptionsToSysParms() == ADD_OPTIONS_TO_SYSPARMS::ALWAYS) ||                                                 // always add option columns?                   
+Log.cpp:                       ((OPTIONS->AddOptionsToSysParms() == ADD_OPTIONS_TO_SYSPARMS::GRID) &&                                                   // add for grids?
+Log.cpp:                       (!OPTIONS->GridFilename().empty() || OPTIONS->CommandLineGrid()))) {                                                     // have grid file or ranges/sets?
+Log.cpp:                        fileDetails.filename    = DETAILED_OUTPUT_DIRECTORY_NAME + "/" + OPTIONS->LogfileDetailedOutput();                      // logfile filename with directory
+Log.cpp:                        fileDetails.recordTypes = OPTIONS->LogfileDetailedOutputRecordTypes();                                                  // record types
+Log.cpp:                    string fileExt = "." + LOGFILETYPEFileExt.at(OPTIONS->LogfileType());                                                       // file extension for HDF5 files
+Log.cpp:                                        // program option NOTES is special - the property is actually a vector of strings (OPTIONS->Notes()),
+Log.cpp:                    if (OPTIONS->LogfileType() == LOGFILETYPE::HDF5) {                                                                          // logging to HDF5 files?
+Log.cpp:                            size_t chunkSize = OPTIONS->nObjectsToEvolve() < HDF5_MINIMUM_CHUNK_SIZE || 
+Log.cpp:                                               p_Logfile == LOGFILE::BSE_DETAILED_OUTPUT ? HDF5_MINIMUM_CHUNK_SIZE : OPTIONS->HDF5ChunkSize();  // chunk size
+Log.cpp:                            size_t IOBufSize = OPTIONS->HDF5BufferSize() * chunkSize;                                                           // IO buffer size
+Log.cpp:    string filename = OPTIONS->LogfileDefinitionsFilename();                                                                    // get user-specified definitions file
+Log.cpp:    std::vector<bool>   addNotes = std::vector<bool>(OPTIONS->NotesHdrs().size(), false);                                       // annotations (notes) user wants added to the base properties
+Log.cpp:    std::vector<bool>   subtractNotes = std::vector<bool>(OPTIONS->NotesHdrs().size(), false);                                  // annotations (notes) user wants subtracted from the base properties
+Log.cpp:                        addNotes      = std::vector<bool>(OPTIONS->NotesHdrs().size(), false);                                  // start with no annotations to be added       
+Log.cpp:                        subtractNotes = std::vector<bool>(OPTIONS->NotesHdrs().size(), false);                                  // start with no annotations to be subtracted
+Log.cpp:                                                            if (notesIdx < 1 or notesIdx > (int)OPTIONS->NotesHdrs().size()) {  // index in valid range?
+Log.h:                                                      string fmt = OPTIONS->PrintBoolAsString() ? "%5s" : "%1s";
+Log.h:                                                      string vS  = OPTIONS->PrintBoolAsString() ? (v ? "TRUE " : "FALSE") : (v ? "1" : "0");
+Log.h:                                                      string fmt = OPTIONS->PrintBoolAsString() ? "%5s" : "%1s";
+Log.h:                                                      string vS  = OPTIONS->PrintBoolAsString() ? (v ? "TRUE " : "FALSE") : (v ? "1" : "0");
+Log.h:    // user-specified option '--notes-hdrs' (OPTIONS->NotesHdrs())
+Log.h:    std::vector<bool> m_BSE_BE_Binaries_Notes = std::vector<bool>(OPTIONS->NotesHdrs().size(), false);
+Log.h:    std::vector<bool> m_BSE_CEE_Notes         = std::vector<bool>(OPTIONS->NotesHdrs().size(), false);
+Log.h:    std::vector<bool> m_BSE_DCO_Notes         = std::vector<bool>(OPTIONS->NotesHdrs().size(), false);
+Log.h:    std::vector<bool> m_BSE_Detailed_Notes    = std::vector<bool>(OPTIONS->NotesHdrs().size(), false);
+Log.h:    std::vector<bool> m_BSE_Pulsars_Notes     = std::vector<bool>(OPTIONS->NotesHdrs().size(), false);
+Log.h:    std::vector<bool> m_BSE_RLOF_Notes        = std::vector<bool>(OPTIONS->NotesHdrs().size(), false);
+Log.h:    std::vector<bool> m_BSE_SNE_Notes         = std::vector<bool>(OPTIONS->NotesHdrs().size(), false);
+Log.h:    std::vector<bool> m_BSE_Switch_Notes      = std::vector<bool>(OPTIONS->NotesHdrs().size(), false);
+Log.h:    std::vector<bool> m_BSE_SysParms_Notes    = std::vector<bool>(OPTIONS->NotesHdrs().size(), false);
+Log.h:    std::vector<bool> m_SSE_Detailed_Notes    = std::vector<bool>(OPTIONS->NotesHdrs().size(), false);
+Log.h:    std::vector<bool> m_SSE_SNE_Notes         = std::vector<bool>(OPTIONS->NotesHdrs().size(), false);
+Log.h:    std::vector<bool> m_SSE_Switch_Notes      = std::vector<bool>(OPTIONS->NotesHdrs().size(), false);
+Log.h:    std::vector<bool> m_SSE_SysParms_Notes    = std::vector<bool>(OPTIONS->NotesHdrs().size(), false);
+Log.h:        bool hdf5 = OPTIONS->LogfileType() == LOGFILETYPE::HDF5;                                                                // logging to hdf5 file?
+Log.h:        switch (OPTIONS->LogfileType()) {
+Log.h:                            value = boost::variant<string>(OPTIONS->Notes(idx));                                                // yes - get value
+Log.h:                if (OPTIONS->LogfileType() == LOGFILETYPE::HDF5)                                                            // logging to HDF5 file?
+Log.h:        if (OPTIONS->LogfileType() == LOGFILETYPE::HDF5) {                  // logging to HDF5 file?
+main.cpp: * The signal is raised in the Star::SwitchTo() function if OPTIONS->BSESwitchLog() 
+main.cpp:        if (evolvingBinaryStarValid && OPTIONS->SwitchLog()) {      // yes - do we have a valid binary star, and are we logging switches?
+main.cpp:    bool   usingGrid = !OPTIONS->GridFilename().empty();                                                            // using grid file?
+main.cpp:    // OPTIONS->AdvanceCmdLineOptionValues(), called at the end of the loop, advances the
+main.cpp:                int gridResult = OPTIONS->ApplyNextGridLine();                                                      // set options according to specified values in grid file              
+main.cpp:                        SHOW_ERROR(error, "Accessing grid file '" + OPTIONS->GridFilename() + "'");                 // show error
+main.cpp:                        ERROR error = OPTIONS->RewindGridFile();                                                    // ready for next commandline options variation
+main.cpp:                            SHOW_ERROR(error, "Accessing grid file '" + OPTIONS->GridFilename() + "'");             // no - show error (should never happen here - should be picked up at file open)
+main.cpp:                        SHOW_ERROR(ERROR::ERROR, "Accessing grid file '" + OPTIONS->GridFilename() + "'");          // unexpected error - show error
+main.cpp:            // (by OPTIONS->ApplyNextGridLine()).
+main.cpp:            // OPTIONS->AdvanceGridLineOptionValues(), called at the end of the loop, advances the
+main.cpp:                if (OPTIONS->FixedRandomSeedGridLine()) {                                                           // user specified a random seed in the grid file for this binary?
+main.cpp:                    randomSeed = OPTIONS->RandomSeedGridLine() + (unsigned long int)gridLineVariation;              // random seed               
+main.cpp:                    if (OPTIONS->SetRandomSeed(randomSeed, optsOrigin) < 0) {                                       // ok?
+main.cpp:                else if (OPTIONS->FixedRandomSeedCmdLine()) {                                                       // no - user specified a random seed on the commandline?
+main.cpp:                    randomSeed = OPTIONS->RandomSeedCmdLine() + (unsigned long int)index;                           // random seed               
+main.cpp:                    if (OPTIONS->SetRandomSeed(randomSeed, optsOrigin) < 0) {                                       // ok?
+main.cpp:                    if (OPTIONS->SetRandomSeed(randomSeed, optsOrigin) < 0) {                                       // ok?
+main.cpp:                    double initialMass = OPTIONS->OptionSpecified("initial-mass") == 1                              // user specified mass?
+main.cpp:                                            ? OPTIONS->InitialMass()                                                // yes, use it
+main.cpp:                                            : utils::SampleInitialMass(OPTIONS->InitialMassFunction(),              // no, sample it
+main.cpp:                                                                       OPTIONS->InitialMassFunctionMax(), 
+main.cpp:                                                                       OPTIONS->InitialMassFunctionMin(), 
+main.cpp:                                                                       OPTIONS->InitialMassFunctionPower());
+main.cpp:                    double metallicity = OPTIONS->OptionSpecified("metallicity") == 1                               // user specified metallicity?
+main.cpp:                                            ? OPTIONS->Metallicity()                                                // yes, use it
+main.cpp:                                            : utils::SampleMetallicity(OPTIONS->MetallicityDistribution(), 
+main.cpp:                                                                       OPTIONS->MetallicityDistributionMax(), 
+main.cpp:                                                                       OPTIONS->MetallicityDistributionMin());      // no, sample it
+main.cpp:                    kickParameters.magnitudeRandomSpecified = OPTIONS->OptionSpecified("kick-magnitude-random") == 1;
+main.cpp:                    kickParameters.magnitudeRandom          = OPTIONS->KickMagnitudeRandom();
+main.cpp:                    kickParameters.magnitudeSpecified       = OPTIONS->OptionSpecified("kick-magnitude") == 1;
+main.cpp:                    kickParameters.magnitude                = OPTIONS->KickMagnitude();
+main.cpp:                    star = OPTIONS->OptionSpecified("rotational-frequency") == 1                                    // user specified rotational frequency?
+main.cpp:                        ? new Star(randomSeed, initialMass, metallicity, kickParameters, OPTIONS->RotationalFrequency() * SECONDS_IN_YEAR) // yes - use it (convert from Hz to cycles per year - see BaseStar::CalculateZAMSAngularFrequency())
+main.cpp:                    if (!OPTIONS->Quiet()) {                                                                        // quiet mode?
+main.cpp:                        int optionsStatus = OPTIONS->AdvanceGridLineOptionValues();                                 // apply next grid file options (ranges/sets)
+main.cpp:            int optionsStatus = OPTIONS->AdvanceCmdLineOptionValues();                                              // yes - apply next commandline options (ranges/sets)
+main.cpp:                if (usingGrid || OPTIONS->CommandLineGrid() || (!usingGrid && index >= OPTIONS->nObjectsToEvolve())) { // created required number of stars?
+main.cpp:    if (!OPTIONS->Quiet()) {
+main.cpp:    bool        usingGrid = !OPTIONS->GridFilename().empty();                                                   // using grid file?
+main.cpp:    // OPTIONS->AdvanceCmdLineOptionValues(), called at the end of the loop, advances the
+main.cpp:                int gridResult = OPTIONS->ApplyNextGridLine();                                                  // yes - set options according to specified values in grid file              
+main.cpp:                        SHOW_ERROR(error, "Accessing grid file '" + OPTIONS->GridFilename() + "'");             // show error
+main.cpp:                        ERROR error = OPTIONS->RewindGridFile();                                                // ready for next commandline options variation
+main.cpp:                            SHOW_ERROR(error, "Accessing grid file '" + OPTIONS->GridFilename() + "'");         // no - show error (should never happen here - should be picked up at file open)
+main.cpp:                        SHOW_ERROR(ERROR::ERROR, "Accessing grid file '" + OPTIONS->GridFilename() + "'");      // unexpected error - show error
+main.cpp:            // (by OPTIONS->ApplyNextGridLine()).
+main.cpp:            // OPTIONS->AdvanceGridLineOptionValues(), called at the end of the loop, advances the
+main.cpp:                if (OPTIONS->FixedRandomSeedGridLine()) {                                                       // user specified a random seed in the grid file for this binary?
+main.cpp:                    randomSeed = OPTIONS->RandomSeedGridLine() + (unsigned long int)gridLineVariation;          // random seed               
+main.cpp:                    if (OPTIONS->SetRandomSeed(randomSeed, optsOrigin) < 0) {                                   // ok?
+main.cpp:                else if (OPTIONS->FixedRandomSeedCmdLine()) {                                                   // no - user specified a random seed on the commandline?
+main.cpp:                    randomSeed = OPTIONS->RandomSeedCmdLine() + (unsigned long int)index + (unsigned long int)gridLineVariation; // random seed               
+main.cpp:                    if (OPTIONS->SetRandomSeed(randomSeed, optsOrigin) < 0) {                                   // ok?
+main.cpp:                    if (OPTIONS->SetRandomSeed(randomSeed, optsOrigin) < 0) {                                   // ok?
+main.cpp:                    if (!OPTIONS->Quiet()) {                                                                    // quiet mode?
+main.cpp:                        if (OPTIONS->CHEMode() == CHE_MODE::NONE) {                                             // CHE enabled?
+main.cpp:                        int optionsStatus = OPTIONS->AdvanceGridLineOptionValues();                             // apply next grid file options (ranges/sets)
+main.cpp:            int optionsStatus = OPTIONS->AdvanceCmdLineOptionValues();                                          // apply next commandline options (ranges/sets)
+main.cpp:                if (usingGrid || OPTIONS->CommandLineGrid() || (!usingGrid && index >= OPTIONS->nObjectsToEvolve())) { // created required number of stars?
+main.cpp:    if (!OPTIONS->Quiet()) {
+main.cpp:    bool ok = OPTIONS->Initialise(argc, argv);                                                      // get the program options from the commandline
+main.cpp:        if (OPTIONS->RequestedHelp()) {                                                             // user requested help?
+main.cpp:            OPTIONS->ShowHelp();                                                                    // show help
+main.cpp:        else if (OPTIONS->RequestedVersion()) {                                                     // user requested version?
+main.cpp:        else if (!OPTIONS->YAMLfilename().empty()) {                                                // user requested YAML file creation?
+main.cpp:            yaml::MakeYAMLfile(OPTIONS->YAMLfilename(), OPTIONS->YAMLtemplate());                   // create YAML file
+main.cpp:            LOGGING->Start(OPTIONS->OutputPathString(),                                             // location of logfiles
+main.cpp:                           OPTIONS->OutputContainerName(),                                          // directory to be created for logfiles
+main.cpp:                           OPTIONS->LogfileNamePrefix(),                                            // prefix for logfile names
+main.cpp:                           OPTIONS->LogLevel(),                                                     // log level - determines (in part) what is written to log file
+main.cpp:                           OPTIONS->LogClasses(),                                                   // log classes - determines (in part) what is written to log file
+main.cpp:                           OPTIONS->DebugLevel(),                                                   // debug level - determines (in part) what debug information is displayed
+main.cpp:                           OPTIONS->DebugClasses(),                                                 // debug classes - determines (in part) what debug information is displayed
+main.cpp:                           OPTIONS->DebugToFile(),                                                  // should debug statements also be written to logfile?
+main.cpp:                           OPTIONS->ErrorsToFile(),                                                 // should error messages also be written to logfile?
+main.cpp:                           OPTIONS->LogfileType());                                                 // log file type
+main.cpp:                if (!OPTIONS->GridFilename().empty()) {                                             // have grid filename?
+main.cpp:                    ERROR error = OPTIONS->OpenGridFile(OPTIONS->GridFilename());                   // yes - open grid file
+main.cpp:                        SHOW_ERROR(error, "Accessing grid file '" + OPTIONS->GridFilename() + "'"); // no - show error
+main.cpp:                    if (OPTIONS->EvolutionMode() == EVOLUTION_MODE::SSE) {                          // SSE?
+main.cpp:                    if (!OPTIONS->GridFilename().empty()) {                                         // have grid filename?
+main.cpp:                        OPTIONS->CloseGridFile();                                                   // yes - close it if it's open
+MainSequence.cpp:    if (OPTIONS->RetainCoreMassDuringCaseAMassTransfer()) {
+MainSequence.h:    double          CalculateCoreMassAtPhaseEnd() const                                     { return OPTIONS->RetainCoreMassDuringCaseAMassTransfer() ? MinimumCoreMass() : 0.0; }                // Accounts for minimal core mass built up prior to mass loss through mass transfer
+MainSequence.h:    double          CalculateZetaConstantsByEnvelope(ZETA_PRESCRIPTION p_ZetaPrescription)  { return OPTIONS->ZetaMainSequence(); }
+MS_gt_07.cpp:    switch (OPTIONS->MassTransferRejuvenationPrescription()) {                                      // which prescription?
+MS_gt_07.cpp:                ? OPTIONS->MassTransferCriticalMassRatioMSHighMassDegenerateAccretor()      // degenerate accretor
+MS_gt_07.cpp:                : OPTIONS->MassTransferCriticalMassRatioMSHighMassNonDegenerateAccretor();  // non-degenerate accretor
+MS_gt_07.cpp:    switch (OPTIONS->EnvelopeStatePrescription()) {                                                 // which envelope prescription?
+MS_gt_07.cpp:            envelope =  utils::Compare(Temperature() * TSOL, OPTIONS->ConvectiveEnvelopeTemperatureThreshold()) > 0 ? ENVELOPE::RADIATIVE : ENVELOPE::CONVECTIVE;  // Envelope is radiative if temperature exceeds fixed threshold, otherwise convective
+MS_lte_07.cpp:    switch (OPTIONS->MassTransferRejuvenationPrescription()) {                                      // which prescription?
+MS_lte_07.cpp:                ? OPTIONS->MassTransferCriticalMassRatioMSLowMassDegenerateAccretor()       // degenerate accretor
+MS_lte_07.cpp:                : OPTIONS->MassTransferCriticalMassRatioMSLowMassNonDegenerateAccretor();   // non-degenerate accretor
+NS.cpp:    switch (OPTIONS->NeutronStarEquationOfState()) {                                                                            // which equation-of-state?
+NS.cpp:    switch (OPTIONS->PulsarBirthSpinPeriodDistribution()) {                                                                     // which distribution?
+NS.cpp:            double maximum = OPTIONS->PulsarBirthSpinPeriodDistributionMax();
+NS.cpp:            double minimum = OPTIONS->PulsarBirthSpinPeriodDistributionMin();
+NS.cpp:    switch (OPTIONS->PulsarBirthMagneticFieldDistribution()) {                                                                  // which distribution?
+NS.cpp:            double maximum = OPTIONS->PulsarBirthMagneticFieldDistributionMax();
+NS.cpp:            double minimum = OPTIONS->PulsarBirthMagneticFieldDistributionMin();
+NS.cpp:            double maximum = PPOW(10.0, OPTIONS->PulsarBirthMagneticFieldDistributionMax());
+NS.cpp:            double minimum = PPOW(10.0, OPTIONS->PulsarBirthMagneticFieldDistributionMin());
+NS.cpp:    double magFieldLowerLimit     = PPOW(10.0, OPTIONS->PulsarLog10MinimumMagneticField()) * GAUSS_TO_TESLA;    
+NS.cpp:    double tau                    = OPTIONS->PulsarMagneticFieldDecayTimescale() * MYR_TO_YEAR * SECONDS_IN_YEAR;                                 
+NS.cpp:    double magFieldLowerLimit_G   = PPOW(10.0, OPTIONS->PulsarLog10MinimumMagneticField()) ;                               // convert to Gauss                                
+NS.cpp:    switch (OPTIONS->NeutronStarAccretionInCE()) {                                  // which mode of CE accretion to use?
+NS.cpp:    double kappa              = OPTIONS->PulsarMagneticFieldDecayMassscale() * MSOL_TO_G;     
+NS.cpp:            double magFieldLowerLimit_G   = PPOW(10.0, OPTIONS->PulsarLog10MinimumMagneticField()) ;                                   
+NS.h:    bool            ShouldEvolveOnPhase() const                                             { return (m_Mass <= OPTIONS->MaximumNeutronStarMass()); }               // Evolve as a neutron star unless mass > maximum neutron star mass (e.g. through accretion)
+Options.cpp:                        if (OPTIONS->OptionSpecified("grid-lines-to-process") == 1 &&               // user specified number of grid lines to process?
+Options.cpp:            m_Gridfile.startLine      = OPTIONS->GridStartLine();                       // set first line to process (0-based)
+Options.cpp:            m_Gridfile.linesToProcess = OPTIONS->GridLinesToProcess();                  // set number of lines to process (-1 = process to EOF)
+Star.cpp:    if (OPTIONS->CHEMode() != CHE_MODE::NONE && utils::Compare(m_Star->Omega(), m_Star->OmegaCHE()) >= 0) {         // CHE?
+Star.cpp:        if (utils::IsOneOf(stellarTypePrev, EVOLVABLE_TYPES) && OPTIONS->SwitchLog()) {                     // star should be evolving from one of the evolvable types (We don't want the initial switch from Star->MS.  Not necessary for BSE (handled differently), but no harm)
+Star.cpp:            if (OPTIONS->EvolutionMode() == EVOLUTION_MODE::BSE) {                                          // BSE?
+Star.cpp:    if (!OPTIONS->TimestepsFileName().empty()) {                                                                            // have timesteps filename?
+Star.cpp:        std::tie(error, timesteps) = utils::ReadTimesteps(OPTIONS->TimestepsFileName());                                    // read timesteps from file
+Star.cpp:        if (m_Star->Time() > OPTIONS->MaxEvolutionTime()) {
+Star.cpp:        else if (stepNum >= OPTIONS->MaxNumberOfTimestepIterations()) {
+Star.cpp:                dt = m_Star->CalculateTimestep() * OPTIONS->TimestepMultiplier();                                           // calculate new timestep   
+TPAGB.cpp:    return (OPTIONS->CommonEnvelopeAlphaThermal() * lambdaBG[0]) + ((1.0 - OPTIONS->CommonEnvelopeAlphaThermal()) * lambdaBG[1]);
+TPAGB.cpp:    return (OPTIONS->CommonEnvelopeAlphaThermal() * lambdaBG[0]) + ((1.0 - OPTIONS->CommonEnvelopeAlphaThermal()) * lambdaBG[1]);
+TPAGB.cpp:        stellarType  = (utils::Compare(gbParams(McBAGB), OPTIONS->MCBUR1() ) < 0) ? STELLAR_TYPE::CARBON_OXYGEN_WHITE_DWARF : STELLAR_TYPE::OXYGEN_NEON_WHITE_DWARF;
+TPAGB.h:            bool            IsSupernova() const                                                                     { return (utils::Compare(m_COCoreMass, m_GBParams[static_cast<int>(GBP::McSN)]) >= 0 && utils::Compare(CalculateInitialSupernovaMass(), OPTIONS->MCBUR1()) >= 0 && utils::Compare(m_COCoreMass, m_Mass) < 0); } // Going supernova if still has envelope and core mass large enough
+typedefs.h:    std::vector<bool>             annotations;              // print flags for each annotation specified by the user (e.g. OPTIONS->NotesHdrs())
+typedefs.h:    double fixed;                                           // Set to OPTIONS->commonEnvelopeLambda
+typedefs.h:	double kruckow;                                         // Calculated using m_Radius and OPTIONS->commonEnvelopeSlopeKruckow
+typedefs.h:    double fixed;                                           // Calculated using lambda = OPTIONS->commonEnvelopeLambda
+yaml.cpp:        std::vector<OptionDetailsT> optionDetails = OPTIONS->CmdLineOptionsDetails();
