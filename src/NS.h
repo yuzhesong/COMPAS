@@ -8,7 +8,7 @@
 
 #include "Remnants.h"
 #include "BH.h"
-
+#include <boost/numeric/odeint.hpp>
 
 class BaseStar;
 class Remnants;
@@ -46,8 +46,15 @@ public:
     static  double          CalculateRadiusOnPhase_Static(const double p_Mass)      { return CalculateRadiusOnPhaseInKM_Static(p_Mass) * KM_TO_RSOL; }              // Radius on phase in Rsol
 
     static  double          CalculateRemnantMass_Static(const double p_COCoreMass)  { return 1.17 + (0.09 * p_COCoreMass); }                                        // Hurley et al., eq 92
-
-
+    static  double          deltaAngularMomentumByPulsarAccretion(const double p_MassGainPerTimeStep, 
+                                                const double p_MagField, 
+                                                const double p_Mass, 
+                                                const double p_Radius,
+                                                const double p_SpinFrequency, 
+                                                const double p_AngularMomentum, 
+                                                const double p_Stepsize, 
+                                                const double p_Kappa, 
+                                                const double p_Epsilon) ;
 protected:
     
     void Initialise() {
@@ -86,19 +93,22 @@ protected:
 
     double          CalculateSpinDownRate(const double p_Omega, const double p_MomentOfInteria, const double p_MagField, const double p_Radius) const;
 
-    double          ChooseTimestep(const double p_Time) const;
+    double          ChooseTimestep(const double p_Time) const;                              
+
+    
 
     STELLAR_TYPE    EvolveToNextPhase()                                                     { return STELLAR_TYPE::BLACK_HOLE; }
     
     bool            ShouldEvolveOnPhase() const                                             { return (m_Mass <= OPTIONS->MaximumNeutronStarMass()); }               // Evolve as a neutron star unless mass > maximum neutron star mass (e.g. through accretion)
     void            SpinDownIsolatedPulsar(const double p_Stepsize);
-    DBL_DBL_DBL_DBL     PulsarAccretion(const double p_MagField, 
+    DBL_DBL_DBL_DBL PulsarAccretion(const double p_MagField, 
                                     const double p_SpinPeriod, 
                                     const double p_AngularMomentum,
                                     const double p_Stepsize,
                                     const double p_MassGainPerTimeStep,
                                     const double kappa,
                                     const double p_Epsilon);
+    
     void            UpdateMagneticFieldAndSpin(const bool   p_CommonEnvelope,
                                                const bool   p_RecycledNS,
                                                const double p_Stepsize,
