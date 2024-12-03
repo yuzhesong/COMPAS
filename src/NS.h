@@ -46,7 +46,7 @@ public:
     static  double          CalculateRadiusOnPhase_Static(const double p_Mass)      { return CalculateRadiusOnPhaseInKM_Static(p_Mass) * KM_TO_RSOL; }              // Radius on phase in Rsol
 
     static  double          CalculateRemnantMass_Static(const double p_COCoreMass)  { return 1.17 + (0.09 * p_COCoreMass); }                                        // Hurley et al., eq 92
-    static  double          deltaAngularMomentumByPulsarAccretion(const double p_MassGainPerTimeStep, 
+    static  DBL_DBL_DBL_DBL  deltaAngularMomentumByPulsarAccretion(const double p_MassGainPerTimeStep, 
                                                 const double p_MagField, 
                                                 const double p_Mass, 
                                                 const double p_Radius,
@@ -54,7 +54,9 @@ public:
                                                 const double p_AngularMomentum, 
                                                 const double p_Stepsize, 
                                                 const double p_Kappa, 
-                                                const double p_Epsilon) ;
+                                                const double p_Epsilon,
+                                                const double p_MoI
+                                                ) ;
 protected:
     
     void Initialise() {
